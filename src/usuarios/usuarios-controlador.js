@@ -3,8 +3,10 @@ const { InvalidArgumentError, InternalServerError } = require('../erros');
 const jwt = require('jsonwebtoken');
 
 function criaTokenJWT(usuario) {
+  const cincoDiasEmMilissegundos = 432000000;
   const payload = {
-    id: usuario.id
+    id: usuario.id,
+    expriraEm: Date.now() + cincoDiasEmMilissegundos 
   };
 
   const token = jwt.sign(payload, process.env.CHAVE_JWT);

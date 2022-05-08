@@ -14,6 +14,12 @@ function verificaUsuario(usuario) {
     }
 }
 
+function verificaExpiracao(tempoExpiracao) {
+    if (tempoExpiracao > Date.now()) {
+      throw new ExpirationError('Token expirado!');
+    }
+}
+
 async function verificaSenha(senha, senhaHash) {
     const senhaValida = await bcrypt.compare(senha, senhaHash);
     if (!senhaValida) {
@@ -43,6 +49,7 @@ passport.use(
         async (token, done) => {
             try {
                 const payload = jwt.verify(token, process.env.CHAVE_JWT);
+                verificaExpiracao(payload.expiraEm);
                 const usuario = await Usuario.buscaPorId(payload.id);
                 done(null, usuario);
             } catch(error) {
