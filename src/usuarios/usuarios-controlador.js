@@ -15,7 +15,7 @@ function criaTokenJWT(usuario) {
 }
 
 module.exports = {
-  adiciona: async (req, res) => {
+  async adiciona (req, res) {
     const { nome, email, senha } = req.body;
 
     try {
@@ -40,13 +40,17 @@ module.exports = {
     }
   },
 
-  login: (req, res) => {
-    const token = criaTokenJWT(req.user);
-    res.set('Authorization', token);
-    res.status(204).send();
+  async login(req, res) {
+    try {
+      const token = criaTokenJWT(req.user);
+      res.set('Authorization', token);
+      res.status(204).send();
+    } catch(erro) {
+      res.status(500).json({ erro: erro.message})
+    }
   },
 
-  logout: async (req, res) => {
+  async logout(req, res) {
     try {
       const token = req.token;
       await blacklist.adiciona(token);
@@ -56,12 +60,16 @@ module.exports = {
     }
   },
 
-  lista: async (req, res) => {
-    const usuarios = await Usuario.lista();
-    res.json(usuarios);
+  async lista(req, res) {
+    try {
+      const usuarios = await Usuario.lista();
+      res.json(usuarios);
+    } catch(erro) {
+      res.status(500).json({erro: erro.message})
+    }
   },
 
-  deleta: async (req, res) => {
+  async deleta(req, res) {
     const usuario = await Usuario.buscaPorId(req.params.id);
     try {
       await usuario.deleta();
