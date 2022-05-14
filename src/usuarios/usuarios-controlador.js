@@ -3,6 +3,8 @@ const { InvalidArgumentError, InternalServerError } = require('../erros');
 const jwt = require('jsonwebtoken');
 const blacklist = require('../../redis/manipula-blacklist');
 
+const crypto = require('crypto')
+
 function criaTokenJWT(usuario) {
   // const cincoDiasEmMilissegundos = 432000000;
   const payload = {
@@ -12,6 +14,11 @@ function criaTokenJWT(usuario) {
 
   const token = jwt.sign(payload, process.env.CHAVE_JWT, { expiresIn: '15m'});
   return token;
+}
+
+function criaTokenOpaco(){
+  const tokenOpaco = crypto.randomBytes(24).toString('hex');
+  return tokenOpaco
 }
 
 module.exports = {
@@ -42,9 +49,10 @@ module.exports = {
 
   async login(req, res) {
     try {
-      const token = criaTokenJWT(req.user);
-      res.set('Authorization', token);
-      res.status(204).send();
+      const accesToken = criaTokenJWT(req.user);
+      const refreshToken = criaTokenOpaco();
+      res.set('Authorization', accesToken);
+      res.status(200).send({refreshToken});
     } catch(erro) {
       res.status(500).json({ erro: erro.message})
     }
