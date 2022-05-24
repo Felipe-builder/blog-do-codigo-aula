@@ -18,7 +18,7 @@ function criaTokenJWT(usuario) {
 
 function criaTokenOpaco(){
   const tokenOpaco = crypto.randomBytes(24).toString('hex');
-  return tokenOpaco
+  return tokenOpaco;
 }
 
 module.exports = {
@@ -50,7 +50,7 @@ module.exports = {
   async login(req, res) {
     try {
       const accesToken = criaTokenJWT(req.user);
-      const refreshToken = criaTokenOpaco();
+      const refreshToken = criaTokenOpaco(req.user);
       res.set('Authorization', accesToken);
       res.status(200).send({refreshToken});
     } catch(erro) {
