@@ -1,28 +1,17 @@
 const passport = require('passport');
+const bcrypt = require('bcrypt');
 const LocalStrategy = require('passport-local').Strategy;
 const BearerStrategy = require('passport-http-bearer').Strategy;
 
 const Usuario = require('./usuarios-modelo');
-
+const tokens = require('./tokens');
 const { InvalidArgumentError } = require('../erros');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const blocklist = require('../../redis/blocklist-access-token');
 
 function verificaUsuario(usuario) {
     if(!usuario) {
         throw new InvalidArgumentError('Não existe usuário com esse e-mail')
     }
 }
-
-async function verificaTokenNaBlocklist(token) {
-    const tokenNaBlocklist = await blocklist.contemToken(token);
-    if (tokenNaBlocklist) {
-      throw new jwt.JsonWebTokenError('Token inválido por logout!');
-    }
-}
-
-
 
 async function verificaSenha(senha, senhaHash) {
     const senhaValida = await bcrypt.compare(senha, senhaHash);
@@ -52,10 +41,9 @@ passport.use(
     new BearerStrategy(
         async (token, done) => {
             try {
-                await verificaTokenNaBlocklist(token);
-                const payload = jwt.verify(token, process.env.CHAVE_JWT);
-                const usuario = await Usuario.buscaPorId(payload.id);
-                done(null, usuario, { token: token });
+                const id = await tokens.access.verifica(token);
+                const usuario = await Usuario.buscaPorId(id);
+                done(null, usuario, { token });
             } catch(error) {
                 done(error);
             }
