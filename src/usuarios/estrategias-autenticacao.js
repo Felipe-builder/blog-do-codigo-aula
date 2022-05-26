@@ -7,7 +7,7 @@ const Usuario = require('./usuarios-modelo');
 const { InvalidArgumentError } = require('../erros');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const blocklist = require('../../redis/blocklist-acess-token');
+const blocklist = require('../../redis/blocklist-access-token');
 
 function verificaUsuario(usuario) {
     if(!usuario) {
