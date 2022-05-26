@@ -1,20 +1,29 @@
 const nodemailer = require('nodemailer');
 
-async function enviaEmail(usuario) {
-    const contaTeste = await nodemailer.createTestAccount();
-    const transportador = nodemailer.createTransport({
-        host: 'smtp.ethereal.email',
-        auth: contaTeste,
-    });
-    const info = await transportador.sendMail({
-        from: '"Blod do Código" <noreply@blogdocodigo.com.br>',
-        to: usuario.email,
-        subject: 'Teste de e-mail',
-        text: 'Olá! Este é um e-mail de teste!',
-        html: '<h1>Olá!</h1> <p>Este é um e-mail de teste!</p>'
-    })
+class Email {    
+    async enviaEmail() {
+        const contaTeste = await nodemailer.createTestAccount();
+        const transportador = nodemailer.createTransport({
+            host: 'smtp.ethereal.email',
+            auth: contaTeste,
+        });
+        const info = await transportador.sendMail(this)
+    
+        console.log('URL: ' + nodemailer.getTestMessageUrl(info));
+    }
 
-    console.log('URL: ' + nodemailer.getTestMessageUrl(info));
 }
 
-module.exports = { enviaEmail };
+class EmailVerificacao extends Email {
+    constructor(usuario, endereco) {
+        super();
+        this.from = '"Blod do Código" <noreply@blogdocodigo.com.br>',
+        this.to = usuario.email,
+        this.subject = 'Verificacao de e-mail',
+        this.text = `Olá! Verifique seu e-mail aqui: ${endereco}`,
+        this.html = `<h1>Olá!</h1> Verifique seu e-mail aqui: <a href="${endereco}">${endereco}</a>`
+    }
+}
+
+
+module.exports = { EmailVerificacao };
