@@ -9,7 +9,7 @@ class Usuario {
     this.nome = usuario.nome;
     this.email = usuario.email;
     this.senhaHash = usuario.senhaHash;
-
+    this.emailVerificado = usuario.emailVerificado
     this.valida();
   }
 
@@ -35,6 +35,10 @@ class Usuario {
     validacoes.campoStringNaoNulo(this.email, 'email');
   }
 
+  async verificaEmail() {
+    this.emailVerificado = true;
+    await usuariosDao.modificaEmailVerificado(this, this.emailVerificado)
+  }
   
   async deleta() {
     return usuariosDao.deleta(this);
