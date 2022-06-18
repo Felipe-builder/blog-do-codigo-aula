@@ -84,7 +84,7 @@
 >```
 > <br>
 
-
+## Without Docker
 
 ### 1. Clone the project from GitHub:
 
