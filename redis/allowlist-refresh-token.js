@@ -1,18 +1,14 @@
-const redis = require('redis')
-const manipulaLista = require('./manipula-lista')
+const Connection = require('./redis-connection');
+const manipulaLista = require('./manipula-lista');
 
-const allowlist = redis.createClient({
-    host: 'redis',
-    port: '6379',
-    prefix: 'allowlist-refresh-token:',
-    legacyMode: true
-})
+const redis = new Connection();
 
-async function redisConnect(){
-    redis.on("error", (error) => {
-        console.log(error);
-    });
-    await redis.connect();       
-};  
+redis.create('redis', '6379', 'allowlist-refresh-token:')
+redis.Client.expireAt
 
-module.exports = manipulaLista(allowlist);
+module.exports = {
+    refreshToken: manipulaLista(redis.Client),
+    connect: () => {
+        redis.connect();
+    }
+} 

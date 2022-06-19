@@ -4,7 +4,9 @@ const moment = require('moment')
 
 const { InvalidArgumentError } = require('../erros');
 const blocklistAccessToken = require('../../redis/blocklist-access-token');
-const allowlistRefreshToken = require('../../redis/allowlist-refresh-token')
+const { refreshToken: allowlistRefreshToken } = require('../../redis/allowlist-refresh-token')
+
+
 
 function criaTokenJWT(id, [tempoQuantidade, tempoUnidade]) {
     const payload = {id};

@@ -1,25 +1,14 @@
-const redis = require('redis');
-const blocklist = redis.createClient({
-    host: 'redis',
-    port: '6379',
-    prefix: 'blocklist-access-token:',
-    legacyMode: true
-});
-
-async function redisConnect(){
-    redis.on("error", (error) => {
-        console.log(error);
-    });
-    await redis.connect();       
-};  
-
-
-const manipulaLista = require('./manipula-lista');
-const manipulaBlocklist = manipulaLista(blocklist);
-
-
 const jwt = require('jsonwebtoken')
 const { createHash } = require('crypto');
+const Connection = require('./redis-connection');
+const manipulaLista = require('./manipula-lista');
+
+
+const redis = new Connection();
+redis.create('redis', '6379', 'blocklist-access-token:');
+const manipulaBlocklist = manipulaLista(redis.Client);
+
+
 
 function geraTokenHash(token) {
     return createHash('sha256')
@@ -36,5 +25,8 @@ module.exports = {
     contemToken: async token => {
         const tokenHash = geraTokenHash(token)
         return manipulaBlocklist.contemChave(tokenHash);
+    },
+    redisConnect: () => {
+        redis.connect();
     }
 }

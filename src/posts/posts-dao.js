@@ -45,7 +45,7 @@ module.exports = {
 
   async remover(id, idAutor) {
     try {
-      return await dbRun('DELETE FROM post WHERE id = ? AND autor = ?', [id, idAutor])
+      return await dbRun('DELETE FROM posts WHERE id = ? AND autor = ?', [id, idAutor])
     } catch (erro) {
       throw new InternalServerError('Erro ao tentar remover o post!')
     }
