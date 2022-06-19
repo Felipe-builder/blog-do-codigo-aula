@@ -1,5 +1,6 @@
 const Usuario = require('./usuarios-modelo');
 const { InvalidArgumentError, InternalServerError } = require('../erros');
+
 const tokens = require('./tokens');
 const { EmailVerificacao } = require('./emails')
 
@@ -10,13 +11,14 @@ function geraEndereco(rota, token) {
  
 module.exports = {
   async adiciona (req, res) {
-    const { nome, email, senha } = req.body;
+    const { nome, email, senha, cargo } = req.body;
 
     try {
       const usuario = new Usuario({
         nome,
         email,
-        emailVerificado: false
+        emailVerificado: false,
+        cargo
       });
 
       await usuario.adicionaSenha(senha);
@@ -31,11 +33,8 @@ module.exports = {
     } catch (erro) {
       if (erro instanceof InvalidArgumentError) {
         res.status(422).json({ erro: erro.message });
-      } else if (erro instanceof InternalServerError) {
-        res.status(500).json({ erro: erro.message });
-      } else {
-        res.status(500).json({ erro: erro.message });
-      }
+      } 
+      res.status(500).json({ erro: erro.message });
     }
   },
 
