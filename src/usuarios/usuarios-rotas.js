@@ -1,5 +1,6 @@
 const usuariosControlador = require('./usuarios-controlador');
 const middlewaresAutenticacao = require('./middlewares-autenticacao');
+const autorizacao = require('../middlewares/autorizacao');
 
 
 module.exports = app => {
@@ -28,7 +29,10 @@ module.exports = app => {
   app
     .route('/usuario')
     .post(usuariosControlador.adiciona)
-    .get(usuariosControlador.lista);
+    .get(
+      [middlewaresAutenticacao.bearer, autorizacao('usuario', 'readAny')],
+      usuariosControlador.lista
+    )
 
   app
     .route('/usuario/verifica_email/:token')
