@@ -11,6 +11,7 @@ controle
 
 controle
     .grant('admin')
+    .readAny('post')
     .createAny('post')
     .deleteAny('post')
     .readAny('usuario')
