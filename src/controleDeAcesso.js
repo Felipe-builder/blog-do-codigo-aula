@@ -8,6 +8,8 @@ controle
     .extend('assinante')
     .createOwn('post')
     .deleteOwn('post')
+    .readOwn('usuario')
+    .deleteOwn('usuario')
 
 controle
     .grant('admin')

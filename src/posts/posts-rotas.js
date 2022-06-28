@@ -24,7 +24,7 @@ module.exports = app => {
         postsControlador.obterDetalhes
       )
       .delete(
-        [middlewaresAutenticacao.bearer, autorizacao('post', 'remover')],
+        [middlewaresAutenticacao.bearer, middlewaresAutenticacao.local, autorizacao('post', 'remover')],
         postsControlador.remover
       )
 };

@@ -35,18 +35,16 @@ module.exports = {
     }
   },
 
-  async buscaPorId(id, idAutor) {
+  async buscaPorId(id, autor) {
     try {
       let instrucoes = 'SELECT * FROM posts WHERE id = ?'
       const parametros = [id]
 
-
-      idAutor = Number(idAutor)
-      if (isNaN(idAutor) === false) {
-          instrucoes = `${instrucoes} AND autor = ?`
-          parametros.push(idAutor)
+      autor = Number(autor)
+      if (isNaN(autor) === false) {
+        instrucoes = `${instrucoes} AND autor = ?`
+        parametros.push(autor)
       }
-
 
       return await dbGet(instrucoes, parametros)
     } catch (erro) {
