@@ -12,15 +12,25 @@ class InternalServerError extends Error {
   }
 }
 
-class ExpirationError extends Error {
-  constructor(mensagem) {
+class NotFoundError extends Error {
+  constructor(entidade) {
+    const mensagem = `Não foi possível encontrar ${entidade}`
     super(mensagem);
-    this.name = 'ExpirationError'
+    this.name = 'NotFoundError'
+  }
+}
+
+class NotAuthorizedError extends Error {
+  constructor() {
+    const mensagem = `Não foi possível acessar esse recurso`
+    super(mensagem);
+    this.name = 'NotAuthorizedError'
   }
 }
 
 module.exports = {
   InvalidArgumentError: InvalidArgumentError,
   InternalServerError: InternalServerError,
-  ExpirationError: ExpirationError
+  NotFoundError: NotFoundError,
+  NotAuthorizedError: NotAuthorizedError
 };

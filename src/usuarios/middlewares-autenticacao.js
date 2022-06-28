@@ -10,16 +10,8 @@ module.exports = {
             'local',
             { session: false },
             (erro, usuario, info) => {
-                if (erro && erro.name === 'InvalidArgumentError') {
-                    return res.status(401).json({ erro: erro.message });
-                }
-
-                if(erro) {
-                    return res.status(500).json({ erro: erro.message });
-                }
-
-                if(!usuario) {
-                    return res.status(401).json();
+                if (erro) {
+                    return next(erro)
                 }
 
                 req.user = usuario;
@@ -34,23 +26,12 @@ module.exports = {
             'bearer',
             { session: false},
             (erro, usuario, info) => {
-                if(erro && erro.name === 'JsonWebTokenError') {
-                    return res.status(401).json({ erro: erro.message });
-                }
-
-                if (erro && erro.name === 'TokenExpiredError') {
-                    return res
-                        .status(401)
-                        .json({ erro: erro.message, expiradoEm: erro.expiredAt });
-                  }
-
                 if(erro) {
-                    return res.status(500).json({ erro: erro.message });
+                    return next(erro)
                 }
-
-                if (!usuario) {
-                    return res.status(401).json();
-                }
+                // if (!usuario) {
+                //     return res.status(401).json();
+                // }
 
                 req.token = info.token;
                 req.user = usuario;
@@ -83,19 +64,8 @@ module.exports = {
             const usuario = await Usuario.buscaPorId(id);
             req.user = usuario;
             next(); 
-        } catch(erro) {
-            if (erro.name === 'JsonWebTokenError') {
-                return res.status(401).json({ erro: erro.message});
-            }
-
-            if (erro.name === 'TokenExpiredError') {
-                return res.status(401).json({ 
-                    erro: erro.message,
-                    expiradoEm: erro.expiredAt
-                })
-            }
-
-            return res.status(500).json({ erro: erro.message }); 
+        } catch(erro) { 
+            return next(erro);
         }
     }
 }

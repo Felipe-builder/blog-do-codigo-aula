@@ -10,7 +10,7 @@ function geraEndereco(rota, token) {
 }
  
 module.exports = {
-  async adiciona (req, res) {
+  async adiciona (req, res, next) {
     const { nome, email, senha, cargo } = req.body;
 
     try {
@@ -31,60 +31,57 @@ module.exports = {
 
       res.status(201).json();
     } catch (erro) {
-      if (erro instanceof InvalidArgumentError) {
-        res.status(422).json({ erro: erro.message });
-      } 
-      res.status(500).json({ erro: erro.message });
+      next(erro);
     }
   },
 
-  async login(req, res) {
+  async login(req, res, next) {
     try {
       const accesToken = tokens.access.cria(req.user.id);
       const refreshToken = await tokens.refresh.cria(req.user.id);
       res.set('Authorization', accesToken);
       res.status(200).send({refreshToken});
     } catch(erro) {
-      res.status(500).json({ erro: erro.message})
+      next(erro)
     }
   },
 
-  async logout(req, res) {
+  async logout(req, res, next) {
     try {
       const token = req.token;
       await tokens.access.invalida(token);
       res.status(204).send();
     } catch(erro) {
-      res.status(500).json({ erro: erro.message })
+      next(erro)
     }
   },
 
-  async lista(req, res) {
+  async lista(req, res, next) {
     try {
       const usuarios = await Usuario.lista();
       res.json(usuarios);
     } catch(erro) {
-      res.status(500).json({erro: erro.message})
+      next(erro)
     }
   },
 
-  async verificaEmail(req, res) {
+  async verificaEmail(req, res, next) {
     try {
       const usuario = req.user;
       await usuario.verificaEmail();
       res.status(200).json();
     } catch(erro) {
-      res.status(500).json({erro: erro.message})
+      next(erro)
     }
   },
 
-  async deleta(req, res) {
-    const usuario = await Usuario.buscaPorId(req.params.id);
+  async deleta(req, res, next) {
     try {
+      const usuario = await Usuario.buscaPorId(req.params.id);
       await usuario.deleta();
       res.status(200).send();
     } catch (erro) {
-      res.status(500).json({ erro: erro });
+      next(erro)
     }
   }
 };
