@@ -4,6 +4,8 @@ const { InvalidArgumentError, InternalServerError } = require('../erros');
 const tokens = require('./tokens');
 const { EmailVerificacao } = require('./emails')
 
+const { ConversorUsuario } = require('../conversores');
+
 function geraEndereco(rota, token) {
   const baseURL = process.env.BASE_URL;
   return `${baseURL}${rota}${token}`;
@@ -59,7 +61,11 @@ module.exports = {
   async lista(req, res, next) {
     try {
       const usuarios = await Usuario.lista();
-      res.json(usuarios);
+      const conversor = new ConversorUsuario(
+        'json',
+        req.acesso.todos.permitido ? req.acesso.todos.atributos : req.acesso.apenasSeu.atributos
+      );
+      res.send(conversor.converter(usuarios));
     } catch(erro) {
       next(erro)
     }
