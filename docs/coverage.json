@@ -1,7 +1,7 @@
 {
-  "coverage": "2.22%",
+  "coverage": "8.14%",
   "expectCount": 135,
-  "actualCount": 3,
+  "actualCount": 11,
   "files": {
     "src/controleDeAcesso.js": {
       "expectCount": 2,
@@ -212,7 +212,7 @@
     },
     "src/usuarios/usuarios-modelo.js": {
       "expectCount": 20,
-      "actualCount": 3,
+      "actualCount": 11,
       "undocumentLines": [
         1,
         2,
@@ -222,15 +222,7 @@
         16,
         17,
         18,
-        37,
-        44,
-        54,
-        55,
-        59,
-        63,
-        72,
-        81,
-        85
+        67
       ]
     },
     "src/usuarios/usuarios-rotas.js": {

@@ -408,9 +408,57 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/usuarios/usuarios-modelo.js~usuario#adicionasenha",
+    "class/src/usuarios/usuarios-modelo.js~Usuario.html#instance-method-adicionaSenha",
+    "src/usuarios/usuarios-modelo.js~Usuario#adicionaSenha",
+    "method"
+  ],
+  [
     "src/usuarios/usuarios-modelo.js~usuario#constructor",
     "class/src/usuarios/usuarios-modelo.js~Usuario.html#instance-constructor-constructor",
     "src/usuarios/usuarios-modelo.js~Usuario#constructor",
+    "method"
+  ],
+  [
+    "src/usuarios/usuarios-modelo.js~usuario#deleta",
+    "class/src/usuarios/usuarios-modelo.js~Usuario.html#instance-method-deleta",
+    "src/usuarios/usuarios-modelo.js~Usuario#deleta",
+    "method"
+  ],
+  [
+    "src/usuarios/usuarios-modelo.js~usuario#valida",
+    "class/src/usuarios/usuarios-modelo.js~Usuario.html#instance-method-valida",
+    "src/usuarios/usuarios-modelo.js~Usuario#valida",
+    "method"
+  ],
+  [
+    "src/usuarios/usuarios-modelo.js~usuario#verificaemail",
+    "class/src/usuarios/usuarios-modelo.js~Usuario.html#instance-method-verificaEmail",
+    "src/usuarios/usuarios-modelo.js~Usuario#verificaEmail",
+    "method"
+  ],
+  [
+    "src/usuarios/usuarios-modelo.js~usuario.buscaporemail",
+    "class/src/usuarios/usuarios-modelo.js~Usuario.html#static-method-buscaPorEmail",
+    "src/usuarios/usuarios-modelo.js~Usuario.buscaPorEmail",
+    "method"
+  ],
+  [
+    "src/usuarios/usuarios-modelo.js~usuario.buscaporid",
+    "class/src/usuarios/usuarios-modelo.js~Usuario.html#static-method-buscaPorId",
+    "src/usuarios/usuarios-modelo.js~Usuario.buscaPorId",
+    "method"
+  ],
+  [
+    "src/usuarios/usuarios-modelo.js~usuario.gerarsenhahash",
+    "class/src/usuarios/usuarios-modelo.js~Usuario.html#static-method-gerarSenhaHash",
+    "src/usuarios/usuarios-modelo.js~Usuario.gerarSenhaHash",
+    "method"
+  ],
+  [
+    "src/usuarios/usuarios-modelo.js~usuario.lista",
+    "class/src/usuarios/usuarios-modelo.js~Usuario.html#static-method-lista",
+    "src/usuarios/usuarios-modelo.js~Usuario.lista",
     "method"
   ],
   [

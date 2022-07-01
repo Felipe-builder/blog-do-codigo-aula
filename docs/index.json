@@ -3232,7 +3232,7 @@
     "__docId__": 177,
     "kind": "file",
     "name": "src/usuarios/usuarios-modelo.js",
-    "content": "const usuariosDao = require('./usuarios-dao');\nconst { InvalidArgumentError, NotFoundError } = require('../erros');\nconst validacoes = require('../validacoes-comuns');\nconst bcrypt = require('bcrypt');\n\n/**\n * A classe Usuario é reponsável por gerenciar todas as opreações relacionadas a usuários\n */\nclass Usuario {\n  /**\n   * O construtor rece os dados de um usuário e os atribui a instância atual\n   * @param {object} usuario \n   */\n  constructor(usuario) {\n    this.id = usuario.id;\n    this.nome = usuario.nome;\n    this.email = usuario.email;\n    this.senhaHash = usuario.senhaHash;\n    this.emailVerificado = usuario.emailVerificado,\n    this.cargo = usuario.cargo\n    this.valida();\n  }\n\n  /**\n   * @throws {InvalidArgumentError} - Esse erro ocorre quando um usuário com o mesmo e-mail já está cadastrado\n   */\n  async adiciona() {\n    if (await usuariosDao.buscaPorEmail(this.email)) {\n      throw new InvalidArgumentError('O usuário já existe!');\n    }\n\n    await usuariosDao.adiciona(this);\n    const {id} = await usuariosDao.buscaPorEmail(this.email);\n    this.id = id;\n  }\n\n  async adicionaSenha(senha) {\n    validacoes.campoStringNaoNulo(senha, 'senha');\n    validacoes.campoTamanhoMinimo(senha, 'senha', 8);\n    validacoes.campoTamanhoMaximo(senha, 'senha', 64);\n    this.senhaHash = await Usuario.gerarSenhaHash(senha);\n  }\n\n  valida() {\n    validacoes.campoStringNaoNulo(this.nome, 'nome');\n    validacoes.campoStringNaoNulo(this.email, 'email');\n    const cargosValidos = ['admin', 'editor', 'assinante']\n\n    if (cargosValidos.indexOf(this.cargo) === -1) {\n      throw new InvalidArgumentError('O campo cargo está inválido')\n    }\n  }\n\n  async verificaEmail() {\n    this.emailVerificado = true;\n    await usuariosDao.modificaEmailVerificado(this, this.emailVerificado)\n  }\n  \n  async deleta() {\n    return usuariosDao.deleta(this);\n  }\n  \n  static async buscaPorId(id) {\n    const usuario = await usuariosDao.buscaPorId(id);\n    if (!usuario) {\n      throw new NotFoundError('usuario');\n    }\n    \n    return new Usuario(usuario);\n  }\n  \n  static async buscaPorEmail(email) {\n    const usuario = await usuariosDao.buscaPorEmail(email);\n    if (!usuario) {\n      throw new NotFoundError('usuario');\n    }\n    \n    return new Usuario(usuario);\n  }\n\n  static lista() {\n    return usuariosDao.lista();\n  }\n\n  static gerarSenhaHash(senha) {\n    const custoHash = 12;\n    return bcrypt.hash(senha, custoHash)\n  }\n\n}\n\nmodule.exports = Usuario;\n",
+    "content": "const usuariosDao = require('./usuarios-dao');\nconst { InvalidArgumentError, NotFoundError } = require('../erros');\nconst validacoes = require('../validacoes-comuns');\nconst bcrypt = require('bcrypt');\n\n/**\n * A classe Usuario é reponsável por gerenciar todas as opreações relacionadas a usuários\n */\nclass Usuario {\n  /**\n   * O construtor rece os dados de um usuário e os atribui a instância atual\n   * @param {object} usuario \n   */\n  constructor(usuario) {\n    this.id = usuario.id;\n    this.nome = usuario.nome;\n    this.email = usuario.email;\n    this.senhaHash = usuario.senhaHash;\n    this.emailVerificado = usuario.emailVerificado,\n    this.cargo = usuario.cargo\n    this.valida();\n  }\n\n  /**\n   * Este método adiciona um usuário\n   * @throws {InvalidArgumentError} - Esse erro ocorre quando um usuário com o mesmo e-mail já está cadastrado\n   */\n  async adiciona() {\n    if (await usuariosDao.buscaPorEmail(this.email)) {\n      throw new InvalidArgumentError('O usuário já existe!');\n    }\n\n    await usuariosDao.adiciona(this);\n    const {id} = await usuariosDao.buscaPorEmail(this.email);\n    this.id = id;\n  }\n\n  /**\n   * Adiciona senha validando o tamanho mínimo e máximo e que não seja nulo. E transforma em um Hash.\n   * @param {string} senha \n   */\n  async adicionaSenha(senha) {\n    validacoes.campoStringNaoNulo(senha, 'senha');\n    validacoes.campoTamanhoMinimo(senha, 'senha', 8);\n    validacoes.campoTamanhoMaximo(senha, 'senha', 64);\n    this.senhaHash = await Usuario.gerarSenhaHash(senha);\n  }\n\n  /**\n   * Valida os campos de email, nome e cargo\n   * @throws {InvalidArgumentError} - Se o campo de cargo não corresponder com um dos disponíveis ['admin', 'editor', 'assinante']\n   */\n  valida() {\n    validacoes.campoStringNaoNulo(this.nome, 'nome');\n    validacoes.campoStringNaoNulo(this.email, 'email');\n    const cargosValidos = ['admin', 'editor', 'assinante']\n\n    if (cargosValidos.indexOf(this.cargo) === -1) {\n      throw new InvalidArgumentError('O campo cargo está inválido')\n    }\n  }\n\n  /**\n   * Verifica o email para tornar a conta válida.\n   */\n  async verificaEmail() {\n    this.emailVerificado = true;\n    await usuariosDao.modificaEmailVerificado(this, this.emailVerificado)\n  }\n  \n  /**\n   * Deleta o usuário\n   * @returns \n   */\n  async deleta() {\n    return usuariosDao.deleta(this);\n  }\n  \n  /**\n   * Realiza uma busca de um usuário no DB através do ID\n   * @param {number} id \n   * @throws {NotFoundError} - Caso não encontrado o usuário com base no 'id'\n   * @returns {object} Usuario\n   */\n  static async buscaPorId(id) {\n    const usuario = await usuariosDao.buscaPorId(id);\n    if (!usuario) {\n      throw new NotFoundError('usuario');\n    }\n    \n    return new Usuario(usuario);\n  }\n  \n  /**\n   * Realiza uma busca de um usuário no Database através do email\n   * @param {string} email \n   * @throws {NotFoundError} - Caso não encontrado o usuário com base no 'email'\n   * @returns {object} Usuario\n   */\n  static async buscaPorEmail(email) {\n    const usuario = await usuariosDao.buscaPorEmail(email);\n    if (!usuario) {\n      throw new NotFoundError('usuario');\n    }\n    \n    return new Usuario(usuario);\n  }\n\n  /**\n   * Realzia uma busca no Database por todos os usuários\n   * @returns {[object]} lista de Usuario\n   */\n  static lista() {\n    return usuariosDao.lista();\n  }\n\n  /**\n   * Transforma a senha do usuário em um hash para posteriormente inserir no Database\n   * @param {string} senha \n   * @returns {string} hashSenha\n   */\n  static gerarSenhaHash(senha) {\n    const custoHash = 12;\n    return bcrypt.hash(senha, custoHash)\n  }\n\n}\n\nmodule.exports = Usuario;\n",
     "static": true,
     "longname": "/home/felipe/workspace/alura/javascript/blog-do-codigo-aula/src/usuarios/usuarios-modelo.js",
     "access": "public",
@@ -3445,8 +3445,8 @@
     "static": false,
     "longname": "src/usuarios/usuarios-modelo.js~Usuario#adiciona",
     "access": "public",
-    "description": "",
-    "lineNumber": 27,
+    "description": "Este método adiciona um usuário",
+    "lineNumber": 28,
     "throws": [
       {
         "types": [
@@ -3468,19 +3468,21 @@
     "static": false,
     "longname": "src/usuarios/usuarios-modelo.js~Usuario#adicionaSenha",
     "access": "public",
-    "description": null,
-    "lineNumber": 37,
-    "undocument": true,
+    "description": "Adiciona senha validando o tamanho mínimo e máximo e que não seja nulo. E transforma em um Hash.",
+    "lineNumber": 42,
     "params": [
       {
-        "name": "senha",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "senha",
+        "description": ""
       }
     ],
-    "return": null,
-    "ignore": true
+    "return": null
   },
   {
     "__docId__": 192,
@@ -3492,12 +3494,18 @@
     "static": false,
     "longname": "src/usuarios/usuarios-modelo.js~Usuario#valida",
     "access": "public",
-    "description": null,
-    "lineNumber": 44,
-    "undocument": true,
+    "description": "Valida os campos de email, nome e cargo",
+    "lineNumber": 53,
+    "throws": [
+      {
+        "types": [
+          "InvalidArgumentError"
+        ],
+        "description": "Se o campo de cargo não corresponder com um dos disponíveis ['admin', 'editor', 'assinante']"
+      }
+    ],
     "params": [],
-    "return": null,
-    "ignore": true
+    "return": null
   },
   {
     "__docId__": 193,
@@ -3509,12 +3517,10 @@
     "static": false,
     "longname": "src/usuarios/usuarios-modelo.js~Usuario#verificaEmail",
     "access": "public",
-    "description": null,
-    "lineNumber": 54,
-    "undocument": true,
+    "description": "Verifica o email para tornar a conta válida.",
+    "lineNumber": 66,
     "params": [],
-    "return": null,
-    "ignore": true
+    "return": null
   },
   {
     "__docId__": 194,
@@ -3525,7 +3531,7 @@
     "longname": "src/usuarios/usuarios-modelo.js~Usuario#emailVerificado",
     "access": "public",
     "description": null,
-    "lineNumber": 55,
+    "lineNumber": 67,
     "undocument": true,
     "type": {
       "types": [
@@ -3544,16 +3550,20 @@
     "static": false,
     "longname": "src/usuarios/usuarios-modelo.js~Usuario#deleta",
     "access": "public",
-    "description": null,
-    "lineNumber": 59,
-    "undocument": true,
+    "description": "Deleta o usuário",
+    "lineNumber": 75,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": ""
+      }
+    ],
     "params": [],
     "return": {
       "types": [
         "*"
       ]
-    },
-    "ignore": true
+    }
   },
   {
     "__docId__": 196,
@@ -3565,23 +3575,42 @@
     "static": true,
     "longname": "src/usuarios/usuarios-modelo.js~Usuario.buscaPorId",
     "access": "public",
-    "description": null,
-    "lineNumber": 63,
-    "undocument": true,
+    "description": "Realiza uma busca de um usuário no DB através do ID",
+    "lineNumber": 85,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{object} Usuario"
+      }
+    ],
     "params": [
       {
-        "name": "id",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "id",
+        "description": ""
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "object"
+      ],
+      "spread": false,
+      "description": "Usuario"
     },
-    "ignore": true
+    "throws": [
+      {
+        "types": [
+          "NotFoundError"
+        ],
+        "description": "Caso não encontrado o usuário com base no 'id'"
+      }
+    ]
   },
   {
     "__docId__": 197,
@@ -3593,23 +3622,42 @@
     "static": true,
     "longname": "src/usuarios/usuarios-modelo.js~Usuario.buscaPorEmail",
     "access": "public",
-    "description": null,
-    "lineNumber": 72,
-    "undocument": true,
+    "description": "Realiza uma busca de um usuário no Database através do email",
+    "lineNumber": 100,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{object} Usuario"
+      }
+    ],
     "params": [
       {
-        "name": "email",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "email",
+        "description": ""
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "object"
+      ],
+      "spread": false,
+      "description": "Usuario"
     },
-    "ignore": true
+    "throws": [
+      {
+        "types": [
+          "NotFoundError"
+        ],
+        "description": "Caso não encontrado o usuário com base no 'email'"
+      }
+    ]
   },
   {
     "__docId__": 198,
@@ -3621,16 +3669,23 @@
     "static": true,
     "longname": "src/usuarios/usuarios-modelo.js~Usuario.lista",
     "access": "public",
-    "description": null,
-    "lineNumber": 81,
-    "undocument": true,
-    "params": [],
+    "description": "Realzia uma busca no Database por todos os usuários",
+    "lineNumber": 113,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{[object]} lista de Usuario"
+      }
+    ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "[object]"
+      ],
+      "spread": false,
+      "description": "lista de Usuario"
     },
-    "ignore": true
+    "params": []
   },
   {
     "__docId__": 199,
@@ -3642,23 +3697,34 @@
     "static": true,
     "longname": "src/usuarios/usuarios-modelo.js~Usuario.gerarSenhaHash",
     "access": "public",
-    "description": null,
-    "lineNumber": 85,
-    "undocument": true,
+    "description": "Transforma a senha do usuário em um hash para posteriormente inserir no Database",
+    "lineNumber": 122,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{string} hashSenha"
+      }
+    ],
     "params": [
       {
-        "name": "senha",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "senha",
+        "description": ""
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
-    },
-    "ignore": true
+        "string"
+      ],
+      "spread": false,
+      "description": "hashSenha"
+    }
   },
   {
     "__docId__": 200,

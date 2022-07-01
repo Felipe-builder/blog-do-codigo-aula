@@ -59,6 +59,7 @@ class Usuario {
   }
 
   /**
+   * Este m&#xE9;todo adiciona um usu&#xE1;rio
    * @throws {InvalidArgumentError} - Esse erro ocorre quando um usu&#xE1;rio com o mesmo e-mail j&#xE1; est&#xE1; cadastrado
    */
   async adiciona() {
@@ -71,6 +72,10 @@ class Usuario {
     this.id = id;
   }
 
+  /**
+   * Adiciona senha validando o tamanho m&#xED;nimo e m&#xE1;ximo e que n&#xE3;o seja nulo. E transforma em um Hash.
+   * @param {string} senha 
+   */
   async adicionaSenha(senha) {
     validacoes.campoStringNaoNulo(senha, &apos;senha&apos;);
     validacoes.campoTamanhoMinimo(senha, &apos;senha&apos;, 8);
@@ -78,6 +83,10 @@ class Usuario {
     this.senhaHash = await Usuario.gerarSenhaHash(senha);
   }
 
+  /**
+   * Valida os campos de email, nome e cargo
+   * @throws {InvalidArgumentError} - Se o campo de cargo n&#xE3;o corresponder com um dos dispon&#xED;veis [&apos;admin&apos;, &apos;editor&apos;, &apos;assinante&apos;]
+   */
   valida() {
     validacoes.campoStringNaoNulo(this.nome, &apos;nome&apos;);
     validacoes.campoStringNaoNulo(this.email, &apos;email&apos;);
@@ -88,15 +97,28 @@ class Usuario {
     }
   }
 
+  /**
+   * Verifica o email para tornar a conta v&#xE1;lida.
+   */
   async verificaEmail() {
     this.emailVerificado = true;
     await usuariosDao.modificaEmailVerificado(this, this.emailVerificado)
   }
   
+  /**
+   * Deleta o usu&#xE1;rio
+   * @returns 
+   */
   async deleta() {
     return usuariosDao.deleta(this);
   }
   
+  /**
+   * Realiza uma busca de um usu&#xE1;rio no DB atrav&#xE9;s do ID
+   * @param {number} id 
+   * @throws {NotFoundError} - Caso n&#xE3;o encontrado o usu&#xE1;rio com base no &apos;id&apos;
+   * @returns {object} Usuario
+   */
   static async buscaPorId(id) {
     const usuario = await usuariosDao.buscaPorId(id);
     if (!usuario) {
@@ -106,6 +128,12 @@ class Usuario {
     return new Usuario(usuario);
   }
   
+  /**
+   * Realiza uma busca de um usu&#xE1;rio no Database atrav&#xE9;s do email
+   * @param {string} email 
+   * @throws {NotFoundError} - Caso n&#xE3;o encontrado o usu&#xE1;rio com base no &apos;email&apos;
+   * @returns {object} Usuario
+   */
   static async buscaPorEmail(email) {
     const usuario = await usuariosDao.buscaPorEmail(email);
     if (!usuario) {
@@ -115,10 +143,19 @@ class Usuario {
     return new Usuario(usuario);
   }
 
+  /**
+   * Realzia uma busca no Database por todos os usu&#xE1;rios
+   * @returns {[object]} lista de Usuario
+   */
   static lista() {
     return usuariosDao.lista();
   }
 
+  /**
+   * Transforma a senha do usu&#xE1;rio em um hash para posteriormente inserir no Database
+   * @param {string} senha 
+   * @returns {string} hashSenha
+   */
   static gerarSenhaHash(senha) {
     const custoHash = 12;
     return bcrypt.hash(senha, custoHash)
