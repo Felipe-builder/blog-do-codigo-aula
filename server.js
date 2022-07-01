@@ -5,6 +5,7 @@ const port = process.env.PORT || 3000;
 const db = require('./database');
 
 const { InvalidArgumentError, NotFoundError, NotAuthorizedError } = require('./src/erros');
+const { ConversorErro } = require('./src/conversores');
 const jwt = require('jsonwebtoken')
 
 app.use((req, res, next) => {
@@ -19,6 +20,7 @@ const routes = require('./rotas');
 routes(app);
 
 //Middlewares
+const conversor = new ConversorErro('json')
 app.use((erro, req, res, next) => {
     let status = 500;
     const body = {
@@ -46,7 +48,7 @@ app.use((erro, req, res, next) => {
     }
 
     res.status(status)
-    res.json(body)
+    res.json(conversor.converter(body))
 })
 
 app.listen(port, () => console.log(`App listening on port ${port}`));

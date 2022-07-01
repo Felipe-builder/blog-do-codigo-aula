@@ -1,13 +1,11 @@
-<p align="center"><b>Segurança em APIs REST</b></p>
 
 <div align="center">
-
-
+<p style="font-weight: bold;">Segurança em APIs REST</p>
+  <h1>API - Blog-aulas</h1>
+  <h3>Aplicando conceitos de segurança numa api express nodejs</h3>
+  <p style="indent-text"><p>
 </div>
 
-  <h1 align="center">API - Blog-aulas</h1>
-  <h3 align="center">Aplicando conceitos de segurança numa api express nodejs</h3>
-  <p align="center" style="indent-text"><p>
 
 ## Pre Requisites
 <a href="https://nodejs.org/en/download/"><img src="https://img.shields.io/badge/nodejs-v16.14.0-green?style=for-the-badge&logo=node.js"/></a></br>

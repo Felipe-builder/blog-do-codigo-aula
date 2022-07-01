@@ -1,6 +1,4 @@
 class Conversor {
-
-
     converter(dados) {
         if (this.camposPublicos.indexOf('*') === -1) {
             dados = this.filtrar(dados)
@@ -54,4 +52,13 @@ class ConversorUsuario extends Conversor {
     }
 }
 
-module.exports = {ConversorPost, ConversorUsuario};
+class ConversorErro extends Conversor {
+    constructor( tipoDeConteudo) {
+        super()
+        this.tipoDeConteudo = tipoDeConteudo
+        this.camposPublicos = ['message', 'mensagem']
+    }
+}
+
+
+module.exports = {ConversorPost, ConversorUsuario, ConversorErro};

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl">
+  <title data-ice="title">Home | blog-do-codigo</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Um blog simples em Node.js"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="blog-do-codigo"><meta property="twitter:description" content="Um blog simples em Node.js"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#usuarios">usuarios</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/usuarios/usuarios-modelo.js~Usuario.html">Usuario</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><p><div>
+<p>Seguran&#xE7;a em APIs REST</p>
+  <h1>API - Blog-aulas</h1>
+  <h3>Aplicando conceitos de seguran&#xE7;a numa api express nodejs</h3>
+  <p></p><p>
+</p></div>
+
+
+</p>
+<h2 id="pre-requisites">Pre Requisites</h2><p><a href="https://nodejs.org/en/download/"><img src="https://img.shields.io/badge/nodejs-v16.14.0-green?style=for-the-badge&amp;logo=node.js"></a><br>
+<a href="https://www.mysql.com/downloads/"><img src="https://img.shields.io/badge/mysql-yellowgreen?style=for-the-badge&amp;logo=mysql"></a><br>
+<a href="https://docs.npmjs.com/about-npm"><img src="https://img.shields.io/badge/npm-v8.3.1-yellow?style=for-the-badge&amp;logo=npm"></a><br>
+<a href="https://redis.io/docs/getting-started/installation/"><img src="https://img.shields.io/badge/redis-yellow?style=for-the-badge&amp;logo=redis"></a>
+<a href="https://code.visualstudio.com/download"><img src="https://img.shields.io/badge/vscode-yellow?style=for-the-badge&amp;logo=Visual Studio Code"></a></p>
+<h1 id="summay">Summay</h1><ul>
+<li>Identifique e solucione problemas de seguran&#xE7;a em sistemas de autentica&#xE7;&#xE3;o;</li>
+<li>Entenda o que s&#xE3;o fun&#xE7;&#xF5;es de hashing e como us&#xE1;-las para guardar senhas de forma mais segura;</li>
+<li>Construa um sistema de autentica&#xE7;&#xE3;o usando tokens;</li>
+<li>Entenda o funcionamento do JSON Web Token e como us&#xE1;-lo para autentica&#xE7;&#xE3;o</li>
+<li><p>Utilize um banco de dados chave-valor em mem&#xF3;ria na sua aplica&#xE7;&#xE3;o.</p>
+</li>
+<li><p>Construa uma allowlist para guardar tokens opacos</p>
+</li>
+<li>Implemente refresh tokens que atualizam JSON Web tokens</li>
+<li>Desenhe uma interface para o uso padronizado de tokens</li>
+<li>Aprenda a enviar e-mails atrav&#xE9;s de Node.js</li>
+<li><p>Construa um sistema de verifica&#xE7;&#xE3;o de e-mails usando tokens</p>
+</li>
+<li><p>Conceitos de Docker</p>
+</li>
+</ul>
+<h2 id="recursos">Recursos</h2><h3 id="consumido">Consumido</h3><blockquote>
+<h2 id="api">API</h2><h3 id="pessoas">Pessoas</h3><ul>
+<li>GET &apos;/usuario&apos;</li>
+<li>POST &apos;/usuario&apos;</li>
+<li>DELETE &apos;/usuario/:id&apos;</li>
+<li>GET &apos;/usuario/verifica_email/:token&apos;</li>
+<li>POST &apos;/usuario/login&apos;</li>
+<li>POST &apos;/usuario/atualiza_token&apos;</li>
+<li>POST &apos;/usuario/logout&apos;</li>
+</ul>
+<h3 id="turmas">Turmas</h3><ul>
+<li>GET &apos;/post&apos;</li>
+<li>POST &apos;/post&apos;</li>
+</ul>
+</blockquote>
+<p><a href="./postman/Blog do Codigo.postman_collection.json">Postman Collections</a></p>
+<h1 id="compilation-guide">Compilation Guide</h1><h2 id="docker">DOCKER</h2><h3 id="1--install-docker">1. INSTALL DOCKER</h3><blockquote>
+<p><a href="https://docs.docker.com/engine/install/">https://docs.docker.com/engine/install/</a></p>
+</blockquote>
+<h3 id="2--push-image">2. Push Image</h3><blockquote>
+<p><a href="https://hub.docker.com/repository/registry-1.docker.io/8841523/api-blog/general">https://hub.docker.com/repository/registry-1.docker.io/8841523/api-blog/general</a></p>
+<p><br></p>
+<pre><code><code class="source-code prettyprint">docker push 8841523/api-blog:tagname</code>
+</code></pre><pre><code><code class="source-code prettyprint">docker network create redis</code>
+</code></pre><pre><code><code class="source-code prettyprint">docker run -d -p 6379:6379 --net &quot;redis&quot; --name redis redis</code>
+</code></pre><pre><code><code class="source-code prettyprint">docker run -p 3000:3000 --net &quot;redis&quot; -v $(pwd):/usr/api-blog -d --name node 8841523/api-blog:1.1</code>
+</code></pre><p><br></p>
+</blockquote>
+<h2 id="without-docker">Without Docker</h2><h3 id="1--clone-the-project-from-github-">1. Clone the project from GitHub:</h3><pre><code><code class="source-code prettyprint">git clone https://github.com/Felipe-builder/blog-do-codigo-aula.git</code>
+</code></pre><h3 id="2--install-depencendies">2. Install depencendies</h3><pre><code><code class="source-code prettyprint">npm install</code>
+</code></pre><h3 id="3--run">3. Run</h3><pre><code><code class="source-code prettyprint">npm run dev</code>
+</code></pre><p>or</p>
+<pre><code><code class="source-code prettyprint">npm run start</code>
+</code></pre><p>The application will respond on port <code>3000</code>, to test if it has been correctly uploaded, just access <a href="http://localhost:3000">localhost:3000</a>.</p>
+<p>To end an application just press <code>ctrl+c</code> in the terminal.</p>
+<h2 id="application-access">Application access</h2><p>The application will respond on port <code>3000</code>, to test if it has been correctly uploaded, just access <a href="http://localhost:3000">localhost:3000</a>.
+test users usernames and passwords </p>
+<h2 id="references">References</h2><blockquote>
+<p><a href="https://nodejs.org/docs/latest-v16.x/api/index.html">https://nodejs.org/docs/latest-v16.x/api/index.html</a></p>
+</blockquote>
+<blockquote>
+<p><a href="https://dev.mysql.com/doc/">https://dev.mysql.com/doc/</a></p>
+</blockquote>
+<blockquote>
+<p><a href="https://mongoosejs.com/docs/api.html">https://mongoosejs.com/docs/api.html</a></p>
+</blockquote>
+<blockquote>
+<p><a href="https://momentjs.com/docs/">https://momentjs.com/docs/</a></p>
+</blockquote>
+</div>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
