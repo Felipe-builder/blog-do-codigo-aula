@@ -48,6 +48,10 @@ class Usuario {
     this.senhaHash = await Usuario.gerarSenhaHash(senha);
   }
 
+  atualizarSenha() {
+    return usuariosDao.atualizarSenha(this.senhaHash, this.id)
+  }
+
   /**
    * Valida os campos de email, nome e cargo
    * @throws {InvalidArgumentError} - Se o campo de cargo não corresponder com um dos disponíveis ['admin', 'editor', 'assinante']

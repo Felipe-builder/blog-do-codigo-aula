@@ -1,10 +1,13 @@
+// IMPORTS
 const Usuario = require('./usuarios-modelo');
-const { InvalidArgumentError, InternalServerError } = require('../erros');
+const { InvalidArgumentError, InternalServerError, NotFoundError } = require('../erros');
 
 const tokens = require('./tokens');
-const { EmailVerificacao } = require('./emails')
+const { EmailVerificacao, EmailRedifinicaoSenha } = require('./emails')
 
 const { ConversorUsuario } = require('../conversores');
+
+
 
 function geraEndereco(rota, token) {
   const baseURL = process.env.BASE_URL;
@@ -86,6 +89,41 @@ module.exports = {
       const usuario = await Usuario.buscaPorId(req.params.id);
       await usuario.deleta();
       res.status(200).send();
+    } catch (erro) {
+      next(erro)
+    }
+  },
+
+  async esqueciMinhaSenha(req, res, next) {
+    const respostaPadrao = {mensagem: 'Se encontrarmos um usuário com este email, vamos enviar uma mensagem com as instruções para redefinir a senha '}
+    try {
+      const email = req.body.email;
+      const usuario = await Usuario.buscaPorEmail(email);
+      const token = await tokens.redefinicaoDeSenha.criarToken(usuario.id);
+      const emailRedifinicaoSenha = new EmailRedifinicaoSenha(usuario, token);
+      await emailRedifinicaoSenha.enviaEmail().catch(console.log)
+
+      res.send(respostaPadrao)
+    } catch (erro) {
+      if( erro instanceof NotFoundError) {
+        res.send(respostaPadrao)
+        return
+      }
+      return(erro)
+    }
+  },
+
+  async trocarSenha(req, res, next) {
+    try {
+      if (typeof req.body.token !== 'string' && req.body.token.lenght === 0) {
+        throw new InvalidArgumentError('O token está inválido')
+      }
+
+      const id = await tokens.redefinicaoDeSenha.verifica(req.body.token);
+      const usuario = await Usuario.buscaPorId(id);
+      await usuario.adicionaSenha(req.body.senha);
+      await usuario.atualizarSenha();
+      res.send({mensagem: 'Sua senha foi atualizada com Sucesso!'})
     } catch (erro) {
       next(erro)
     }

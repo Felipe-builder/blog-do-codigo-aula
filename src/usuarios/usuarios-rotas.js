@@ -1,3 +1,4 @@
+//IMPORTS
 const usuariosControlador = require('./usuarios-controlador');
 const middlewaresAutenticacao = require('./middlewares-autenticacao');
 const autorizacao = require('../middlewares/autorizacao');
@@ -5,12 +6,19 @@ const autorizacao = require('../middlewares/autorizacao');
 
 module.exports = app => {
   app
+    .route('/usuario/trocar-senha')
+    .post(usuariosControlador.trocarSenha)
+
+  app
+    .route('/usuario/esqueci-minha-senha')
+    .post(usuariosControlador.esqueciMinhaSenha)
+
+  app
     .route('/usuario/atualiza_token')
     .post(
         middlewaresAutenticacao.refresh,
         usuariosControlador.login
       )
-
 
   app
     .route('/usuario/login')

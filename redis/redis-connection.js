@@ -1,5 +1,10 @@
+//IMPORTS
 const redis = require('redis')
 
+
+/**
+ * Essa classe é responsável para instanciar um client e fazer a conexão
+ */
 class RedisClient {
     constructor() {
       this.Client = null;

@@ -1,13 +1,15 @@
+//IMPORTS
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto')
-const moment = require('moment')
+const crypto = require('crypto');
+const moment = require('moment');
 
 const { InvalidArgumentError } = require('../erros');
 const blocklistAccessToken = require('../../redis/blocklist-access-token');
-const { refreshToken: allowlistRefreshToken } = require('../../redis/allowlist-refresh-token')
+const { refreshToken: allowlistRefreshToken } = require('../../redis/allowlist-refresh-token');
+const { redefinicaoDeSenha: listaRedefinicao } = require('../../redis/listaRedefinicaoDeSenha');
 
 
-
+//PRIVATE FUNCTIONS
 function criaTokenJWT(id, [tempoQuantidade, tempoUnidade]) {
     const payload = {id};
     const token = jwt.sign(payload, process.env.CHAVE_JWT, { expiresIn: tempoQuantidade+tempoUnidade});
@@ -64,6 +66,7 @@ function verificaTokenEnviado(token, nome) {
     }
 }
 
+//PUBLIC FUNCTIONS
 module.exports = {
     access: {
         nome: 'access token',
@@ -101,7 +104,18 @@ module.exports = {
             return criaTokenJWT(id, this.expiracao);
         },
         verifica(token) {
-            return verificaTokenJWT(token, this.nome)
+            return verificaTokenJWT(token, this.nome);
+        }
+    },
+    redefinicaoDeSenha: {
+        nome: 'redefinição de senha',
+        lista: listaRedefinicao,
+        expiracao: [1, 'h'],
+        criarToken(id) {
+            return criaTokenOpaco(id, this.expiracao, this.lista);
+        },
+        verifica(token) {
+            return verificaTokenOpaco(token, this.nome, this.lista);
         }
     }
 }
