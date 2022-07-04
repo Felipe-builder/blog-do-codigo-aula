@@ -9,14 +9,24 @@ const { ConversorUsuario } = require('../conversores');
 
 
 
+//FUNCTIONS
+const pluck = (object, ...keys) => {
+  const newObject = {}
+  keys.forEach(key => newObject[key] = object[key])
+  return newObject
+}
+
 function geraEndereco(rota, token) {
   const baseURL = process.env.BASE_URL;
   return `${baseURL}${rota}${token}`;
 }
+
+
+
  
 module.exports = {
   async adiciona (req, res, next) {
-    const { nome, email, senha, cargo } = req.body;
+    const { nome, email, senha, cargo } = pluck(req.body, 'nome', 'email', 'senha', 'cargo');
 
     try {
       const usuario = new Usuario({

@@ -8,9 +8,13 @@ const { EmailPostCriado } = require('../usuarios/emails');
 module.exports = {
   async adiciona(req, res) {
     try {
-      req.body.autor = req.user.id;
-      let post = new Post(req.body);
-      post = await post.adiciona();
+      const dadosPost = {
+        titulo: req.body.titulo,
+        conteudo: req.body.conteudo,
+        autor: req.user.id
+      }
+      let post = new Post(dadosPost);
+      await post.adiciona();
       const emailPostCriado = new EmailPostCriado(req.user, post.titulo);
       await emailPostCriado.enviaEmail().catch(console.log);
       res.status(201).send(post);
