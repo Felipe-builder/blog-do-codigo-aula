@@ -11,7 +11,9 @@ class Post {
   }
 
   adiciona() {
-    return postsDao.adiciona(this);
+    const post = postsDao.adiciona(this);
+    const id = post.lastID;
+    return post;
   }
 
   static async buscaPorId(id) {

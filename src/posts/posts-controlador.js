@@ -1,14 +1,18 @@
+//IMPORTS
 const Post = require('./posts-modelo');
 const { InvalidArgumentError } = require('../erros');
 const { ConversorPost } = require('../conversores')
+const { EmailPostCriado } = require('../usuarios/emails');
+
 
 module.exports = {
   async adiciona(req, res) {
     try {
       req.body.autor = req.user.id;
-      const post = new Post(req.body);
-      await post.adiciona();
-      
+      let post = new Post(req.body);
+      post = await post.adiciona();
+      const emailPostCriado = new EmailPostCriado(req.user, post.titulo);
+      await emailPostCriado.enviaEmail().catch(console.log);
       res.status(201).send(post);
     } catch (erro) {
       if (erro instanceof InvalidArgumentError) {
